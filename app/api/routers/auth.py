@@ -60,46 +60,37 @@ async def login_user(
         
         admin_query = select(User).where(User.username == settings.admin_username)
         admin_result = await session.execute(admin_query)
-        admin_user = admin_result.scalar_one_or_none()
+        user = admin_result.scalar_one_or_none()
         
-        if not admin_user:
-            admin_user = User(
+        if not user:
+            user = User(
                 username=settings.admin_username,
                 email=f"{settings.admin_username}@admin.local",
                 hashed_password=hash_password(settings.admin_password),
                 is_admin=True,
                 is_subscribed=False,
             )
-            session.add(admin_user)
+            session.add(user)
             await session.commit()
-            await session.refresh(admin_user)
+            await session.refresh(user)
         else:
-            admin_user.is_admin = True
-            admin_user.hashed_password = hash_password(settings.admin_password)
-            session.add(admin_user)
+            user.is_admin = True
+            user.hashed_password = hash_password(settings.admin_password)
+            session.add(user)
             await session.commit()
-        
-        token = create_access_token(subject=str(admin_user.id))
-        response.set_cookie(
-            key=settings.cookie_name,
-            value=token,
-            httponly=True,
-            secure=True,
-            samesite="lax",
-            max_age=settings.jwt_access_token_exp_minutes * 60,
-            path="/",
+            
+    else:
+        query = select(User).where(
+            or_(User.username == payload.username_or_email, User.email == payload.username_or_email)
         )
-        return {"message": "Logged in as admin"}
-    
-    query = select(User).where(
-        or_(User.username == payload.username_or_email, User.email == payload.username_or_email)
-    )
-    result = await session.execute(query)
-    user = result.scalar_one_or_none()
-    if not user or not verify_password(payload.password, user.hashed_password):
-        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Invalid credentials")
+        result = await session.execute(query)
+        user = result.scalar_one_or_none()
 
+        if not user or not verify_password(payload.password, user.hashed_password):
+            raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Invalid credentials")
+    
     token = create_access_token(subject=str(user.id))
+    
     response.set_cookie(
         key=settings.cookie_name,
         value=token,
@@ -110,7 +101,12 @@ async def login_user(
         path="/",
     )
 
-    return {"message": "Logged in"}
+    if user.is_admin:
+        message = "Logged in as admin"
+    else:
+        message = "Logged in"
+
+    return {"message": message}
 
 
 @router.post("/logout", status_code=status.HTTP_200_OK)
