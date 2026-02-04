@@ -1,0 +1,24 @@
+__pycache__/
+*.py[cod]
+*.so
+*.egg-info/
+.eggs/
+.Python
+.env
+.env.*
+.venv/
+venv/
+.cache/
+.mypy_cache/
+.pytest_cache/
+.ruff_cache/
+.vscode/
+.idea/
+.DS_Store
+*.log
+
+# db
+*.sqlite3
+
+MIGRATIONS.md
+.migrations/
