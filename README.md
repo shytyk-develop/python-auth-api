@@ -170,6 +170,44 @@ Access API documentation at `http://localhost:8000/docs`
 - Storage: HttpOnly, Secure, SameSite cookies
 - Validation on every protected endpoint
 
+## Testing Admin Features
+
+### Demo Credentials
+For testing admin-only features (newsletter sending), use these credentials:
+
+```
+Username: admin
+Password: G7k_mP2v-Q9s!uX
+```
+
+**How to test:**
+
+1. Go to Swagger UI: `http://localhost:8000/docs`
+2. Click **POST /auth/login**
+3. Enter demo credentials:
+   ```json
+   {
+     "username_or_email": "admin",
+     "password": "G7k_mP2v-Q9s!uX"
+   }
+   ```
+4. Now access **POST /newsletter/send** endpoint (admin-only)
+
+### Create Test User
+
+```bash
+curl -X POST http://localhost:8000/auth/register \
+  -H "Content-Type: application/json" \
+  -d '{
+    "username": "testuser",
+    "email": "test@example.com",
+    "password": "TestPass123",
+    "is_subscribed": true
+  }'
+```
+
+Then login with these credentials to test user endpoints.
+
 ## Email Configuration
 
 ### For Gmail:
