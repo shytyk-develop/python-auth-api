@@ -8,6 +8,17 @@
 
 A production-ready FastAPI authentication API with comprehensive documentation, security features, and database migrations.
 
+## 📑 Quick Navigation
+
+- [What's Included](#whats-included) - Core features and security
+- [🚀 Quick Start](#-quick-start) - Get up and running in 5 minutes
+- [📊 API Endpoints](#-api-endpoints) - All available endpoints
+- [🔐 Security Features](#-security-features) - Authentication & admin system
+- [📧 Email Configuration](#email-configuration) - SMTP setup
+- [🗄️ Database Migrations](#️-database-migrations) - Alembic guide
+- [📁 Project Structure](#-project-structure) - File organization
+- [🔗 Resources](#-related-resources) - Official documentation links
+
 ## What's Included
 
 ### Core Features
